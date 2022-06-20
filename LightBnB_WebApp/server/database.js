@@ -1,5 +1,3 @@
-const properties = require('./json/properties.json');
-const users = require('./json/users.json');
 const { Pool } = require('pg');
 
 const pool = new Pool({
@@ -14,14 +12,12 @@ const getUserWithEmail = function(email) {
   return pool
     .query(`SELECT * FROM users WHERE email = $1;`, [email])
     .then((result) => {
-      console.log(result.rows);
       return result.rows[0];
     })
-    .catch((err) => {
-      console.log(err.message);
+    .catch(() => {
       return null;
     });
-}
+};
 exports.getUserWithEmail = getUserWithEmail;
 
 
@@ -30,14 +26,12 @@ const getUserWithId = function(id) {
   return pool
     .query(`SELECT id FROM users WHERE id = $1;`, [id])
     .then((result) => {
-      console.log(result.rows);
       return result.rows[0];
     })
-    .catch((err) => {
-      console.log(err.message);
+    .catch(() => {
       return null;
     });
-}
+};
 exports.getUserWithId = getUserWithId;
 
 
@@ -46,16 +40,15 @@ const addUser =  function(user) {
   return pool
     .query(`
     INSERT INTO users (name, email, password) 
-    VALUES ($1, $2, $3) RETURNING *;`, 
+    VALUES ($1, $2, $3) RETURNING *;`,
     [user.name, user.email, user.password])
     .then((result) => {
-      console.log(result.rows);
       return result.rows;
     })
     .catch((err) => {
-      console.log(err.message);
+      return err.message;
     });
-}
+};
 exports.addUser = addUser;
 
 
@@ -70,16 +63,15 @@ const getAllReservations = function(guest_id, limit = 10) {
     WHERE reservations.guest_id = $1
     GROUP BY properties.id, reservations.id
     ORDER BY reservations.start_date
-    LIMIT $2`, 
+    LIMIT $2`,
     [guest_id, limit])
     .then((result) => {
-      console.log(result.rows);
       return result.rows;
     })
     .catch((err) => {
-      console.log(err.message);
+      return err.message;
     });
-}
+};
 exports.getAllReservations = getAllReservations;
 
 
@@ -89,8 +81,8 @@ const getAllProperties = (options, limit = 10) => {
   let queryText = `SELECT properties.id, title, cost_per_night, avg(property_reviews.rating) as average_rating
   FROM properties
   LEFT JOIN property_reviews ON properties.id = property_id
-  `
-  if(options.city) {
+  `;
+  if (options.city) {
     queryParams.push(`%${options.city}%`);
     queryText += `WHERE city LIKE $${queryParams.length} `;
   }
@@ -128,11 +120,10 @@ const getAllProperties = (options, limit = 10) => {
   return pool
     .query(queryText, queryParams)
     .then((result) => {
-      console.log(result.rows);
       return result.rows;
     })
     .catch((err) => {
-      console.log(err.message);
+      return err.message;
     });
 };
 exports.getAllProperties = getAllProperties;
@@ -143,14 +134,13 @@ const addProperty = function(property) {
   return pool
     .query(`
     INSERT INTO properties (owner_id, title, description, thumbnail_photo_url, cover_photo_url, cost_per_night, street, city, province, post_code, country, parking_spaces, number_of_bathrooms, number_of_bedrooms)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *;`, 
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *;`,
     [property.owner_id, property.title, property.description, property.thumbnail_photo_url, property.cover_photo_url, property.cost_per_night, property.street, property.city, property.province, property.post_code, property.country, property.parking_spaces, property.number_of_bathrooms, property.number_of_bedrooms])
     .then((result) => {
-      console.log(result.rows[0]);
       return result.rows;
     })
     .catch((err) => {
-      console.log(err.message);
+      return err.message;
     });
-}
+};
 exports.addProperty = addProperty;
