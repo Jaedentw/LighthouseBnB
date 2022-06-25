@@ -1,5 +1,13 @@
 # LightBnB
 
+## Getting Started
+  * npm install all dependencies
+  * From main directory, accessing sql terminal
+    * download schema `\i migrations/01_schema.sql`
+    * download data `\i seeds/01_seeds.sql`, `\i seeds/01_seeds.sql`
+  * Start server within the `LightBnB_WebApp` directory using `npm run local`
+  * Server is hosted on port `3000` and can be found at `http://localhost:3000`
+
 ## Project Structure
 
 ```
@@ -20,12 +28,17 @@
 │   │   └── views_manager.js
 │   └── styles
 ├── sass
-└── server
-  ├── apiRoutes.js
-  ├── database.js
-  ├── json
-  ├── server.js
-  └── userRoutes.js
+├── server
+│   ├── apiRoutes.js
+│   ├── database.js
+│   ├── json
+│   ├── server.js
+│   └── userRoutes.js
+├── migrations
+│   └── 01_schema.sql
+├── seeds
+│     ├── 01_seeds.sql
+│     └── 02_seeds.sql
 ```
 
 * `public` contains all of the HTML, CSS, and client side JavaScript. 
